@@ -32,6 +32,10 @@ public class Player {
         
         	
        }
+        public void jump(){
+        
+        	
+        }
         public void setVy(float vy) {
             this.vy = vy;
           }
