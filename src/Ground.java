@@ -10,6 +10,7 @@ public class Ground {
 	private float x;
     private float y;
     private float vx;
+    private float PROPER_SETPOSITION_INIT_X=100+640+100+640+320+100;
     public static final int WIDTH = 640;
   public static final int HEIGHT = 40;
   Image ground;
@@ -30,7 +31,7 @@ public class Ground {
     x += vx;  
         if(this.x < -WIDTH/2)
 		    {
-		    	this.x=100+640+100+640+320+100;
+		    	this.x=PROPER_SETPOSITION_INIT_X;
 		    }
       
        

@@ -21,11 +21,13 @@ public class Manualman extends BasicGame {
     static public Player player;
     static public Ground[] grounds;
     static public Topground[] topgrounds;
-   // static public Middleground[] middlegrounds;
+    static public Middleground[] middlegrounds;
     private boolean[] colliressground;
     private boolean[] colliresstopground;
+    private boolean[] colliressmiddleground;
     public static Shape[] rectground;
     public static Shape[] recttopground;
+    public static Shape[] rectmiddleground;
 	public Manualman(String title) {
 		super(title);
 		
@@ -54,18 +56,25 @@ public class Manualman extends BasicGame {
 		        colliresstopground[i]= false;
 		        
 		        }
+	        colliressmiddleground = new boolean[3];
+	        for(int i = 0;i< colliressmiddleground.length;i++){
+	        colliressmiddleground[i]= false;
+	        
+	        }
 	    
 	    }
   public void SHAPE_INITALL(){
 	  rectground = new Rectangle[3];
 	  for(int i=0; i < 3; i++){
 	        rectground[i] = new Rectangle(GAME_WIDTH/2-50-640+((640+100)*i),GAME_HEIGHT-40,640,40);
-	       
 	        }
 	  recttopground = new Rectangle[3];
 	  for(int i=0; i < 3; i++){
 	        recttopground[i] = new Rectangle(0*(GAME_WIDTH*i), Topground.HEIGHT/2,640,40);
-	     
+	        }
+	  rectmiddleground = new Rectangle[3];
+	  for(int i=0; i < 3; i++){
+	        rectmiddleground[i] = new Rectangle(0*(GAME_WIDTH*i), Middleground.HEIGHT/2,640,40);
 	        }
   }
   public void INIT_ALLGROUND() throws SlickException{
@@ -79,6 +88,11 @@ public class Manualman extends BasicGame {
       topgrounds[i] = new Topground(50+((640+100)*i), Topground.HEIGHT/2,Ground_VX);
       
       }
+      middlegrounds = new Middleground[3];
+      for (int i = 0; i < 3; i++) {
+     middlegrounds[i] = new Middleground(-300+((640+100)*i), GAME_HEIGHT/2,Ground_VX);
+    
+    }
 	  
   }
   
@@ -107,10 +121,22 @@ public class Manualman extends BasicGame {
 	      if(colliresstopground[0]||colliresstopground[1]||colliresstopground[2]){
 	    	  Swingjump=1;
 	        player.y=420;
-	       
 	        player.setVy(0); 
 	        }
 	      }
+	  for(int j= 0;j<colliressmiddleground.length;j++){
+		  colliressmiddleground[j]=Player.circleplayer.intersects(rectmiddleground[j]);
+		  //เช็คเคสชนล่างกับชนบน พื้นกลาง
+		  if((player.y<=280&&player.y>=250)&&(colliressmiddleground[0]||colliressmiddleground[1]||colliressmiddleground[2])){
+	          player.y=280;
+	          Swingjump=0;
+	          player.setVy(0); }
+	            
+	            if((player.y>=200&&player.y<=230)&&(colliressmiddleground[0]||colliressmiddleground[1]||colliressmiddleground[2])){
+	          player.y=200;
+	          Swingjump=1;
+	          player.setVy(0); }
+	  }
 	  
 	  
   }
@@ -125,6 +151,11 @@ public class Manualman extends BasicGame {
       topground.update();
       
  }
+ for (Middleground middleground : middlegrounds) {
+     
+     middleground.update();
+     
+}
  }
   public void PLAYER_UPDATE(){
 	  player.update();
@@ -147,7 +178,12 @@ public class Manualman extends BasicGame {
           topground.render();
           
      }
-	  
+  for (Middleground middleground : middlegrounds) {
+      
+      middleground.render();
+      
+ }
+  
 	  
   }
   public static void SETCOLOR_SHAPE(Graphics g){
@@ -169,6 +205,12 @@ public class Manualman extends BasicGame {
           g.setColor(Color.pink);
           g.draw(rec);
           }
+      for(Shape rec : rectmiddleground){
+          g.setColor(Color.yellow);
+          g.fill(rec);
+          g.setColor(Color.pink);
+          g.draw(rec);
+          }
 	  
   }
   public void RECT_SETXYAUTO(){  
@@ -179,6 +221,10 @@ public class Manualman extends BasicGame {
 	  for(int temp = 0; temp < 3; temp++){
 	        recttopground[temp].setCenterX(topgrounds[temp].getX());
 	        recttopground[temp].setCenterY(topgrounds[temp].getY()); 
+	        }
+	  for(int temp = 0; temp < 3; temp++){
+	        rectmiddleground[temp].setCenterX(middlegrounds[temp].getX());
+	        rectmiddleground[temp].setCenterY(middlegrounds[temp].getY()); 
 	        }
   }
   public static void CREATE_PLAYER() throws SlickException{
