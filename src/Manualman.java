@@ -12,23 +12,30 @@ import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
  
 public class Manualman extends BasicGame {
+	// ค่าต่างๆภายในเกม
 	public static float Swingjump = 0;// ถ้า = 0 คือ ล่วงลง ถ้า = 1 คือลอยขึ้น
 	public static float G = (float) 0.5;
-    public static final float PLAYER_JUMP_VY = 10;
+    public static final float PLAYER_JUMP_VY = 20;
     public static final int GAME_WIDTH = 640;
     public static final int GAME_HEIGHT = 480;
     public static final float Ground_VX = -4;
+    // ประกาศอ๊อบเจ็ค
     static public Player player;
     static public Ground[] grounds;
     static public Topground[] topgrounds;
     static public Middleground[] middlegrounds;
+    // boolean ไว้เก็บค่าดช็นชน
     private boolean[] colliressground;
     private boolean[] colliresstopground;
     private boolean[] colliressmiddleground;
+    // Collider ไว้เช็ตชน
     public static Shape[] rectground;
     public static Shape[] recttopground;
     public static Shape[] rectmiddleground;
-	public Manualman(String title) {
+    //boolean สำหรับ จบเกมกับรีเซ็ทเกม
+    private boolean GAMEISOVER ;
+    private boolean GAMERESET ;
+    public Manualman(String title) {
 		super(title);
 		
 	}
@@ -37,14 +44,20 @@ public class Manualman extends BasicGame {
  
   @Override
   public void init(GameContainer gc) throws SlickException { 
-
+	  GAMEISOVER = false;
+      GAMERESET= false;
 	  CREATE_PLAYER(); //กำหนดค่าเริ่มต้นให้ตัวละคร
 	  INIT_ALLGROUND(); //กำหนดค่าเริ่มต้นให้ทุกพื้น
 	  INIT_COLLIRESS_ALL(); //กำหนดค่าบูลีน รับค่าเช็คชนทุกตัว เป็น false
 	  SHAPE_INITALL(); //กำหนดสร้าง Collider ไว้ตอนเริ่มเกม
-	       
 	  }
-  
+  // Method in init {
+ public static void CREATE_PLAYER() throws SlickException{
+
+	  
+	  player = new Player(GAME_WIDTH/4+200, 300, 0);
+	  
+  }
   public void INIT_COLLIRESS_ALL(){
 	    	colliressground = new boolean[3];
 	        for(int i = 0;i< colliressground.length;i++){
@@ -95,17 +108,22 @@ public class Manualman extends BasicGame {
     }
 	  
   }
-  
+  //}
   
   
  
   @Override
   public void update(GameContainer gc, int dt) throws SlickException {
+	  GAME_RESTART_BYPRESS_ENTER(gc);
+	  if(!GAMEISOVER){
 	  PLAYER_UPDATE(); //อัพเดธตัวละครเกม
 	  UPDATE_ALL_GROUND(); //ไว้อัพเดธพื้นทุกพื้น
 	  CheckCollisionALL_Ground(); //ไว้เช็คชน
 	  RECT_SETXYAUTO(); //ให้ Collider ไล่ตามพื้นต่างๆ อัตโนมัติ
+	  ENDOFEDGE();
+	  }
   }
+  // Method in update {
   public void CheckCollisionALL_Ground(){
 	  for(int j= 0;j<colliressground.length;j++){
 	      colliressground[j]=Player.circleplayer.intersects(rectground[j]);
@@ -161,12 +179,25 @@ public class Manualman extends BasicGame {
 	  player.update();
 	  
   }
+  public void GAME_RESTART_BYPRESS_ENTER(GameContainer gc) throws SlickException{ if(GAMERESET){
+      gc.reinit();
+      }}
+  public void ENDOFEDGE(){
+      if(player.getY()+Player.HEIGHT/2<=-20||player.getY()-Player.HEIGHT/2>=600){
+      GAMEISOVER= true;
+      }
+      }
+  // }
   @Override
   public void render(GameContainer gc, Graphics g) throws SlickException {
 	  player.render();
 	  RENDER_ALLGROUND(); // วาดพื้นล่างกลางบน
 	  SETCOLOR_SHAPE(g); // เอาไว้  เซตสีของ colliderที่ไว้ใช้เช็คชน
+	  if(GAMEISOVER){
+          g.drawString("GAME OVER", 320-40, 240-10);
+          }
   }
+  //Method in render {
   public void RENDER_ALLGROUND(){
  for (Ground ground : grounds) {
           
@@ -227,18 +258,18 @@ public class Manualman extends BasicGame {
 	        rectmiddleground[temp].setCenterY(middlegrounds[temp].getY()); 
 	        }
   }
-  public static void CREATE_PLAYER() throws SlickException{
-
-	  
-	  player = new Player(GAME_WIDTH/4+200, 300, 0);
-	  
-  }
+ 
+  // }
   @Override
   public void keyPressed(int key, char c) {
           if (key == Input.KEY_SPACE) {
         	
         	  player.jump();  
-          }}
+          }
+          if (key == Input.KEY_ENTER) {
+              GAMERESET = true;
+              }
+  }
   public static void main(String[] args) {
     try {
       AppGameContainer appgc;
