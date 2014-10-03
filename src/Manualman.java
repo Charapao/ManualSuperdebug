@@ -6,12 +6,13 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
 import org.newdawn.slick.geom.Shape;
  
 public class Manualman extends BasicGame {
-	
+	public static float Swingjump = 0;// ถ้า = 0 คือ ล่วงลง ถ้า = 1 คือลอยขึ้น
 	public static float G = (float) 0.5;
     public static final float PLAYER_JUMP_VY = 10;
     public static final int GAME_WIDTH = 640;
@@ -19,8 +20,12 @@ public class Manualman extends BasicGame {
     public static final float Ground_VX = -4;
     static public Player player;
     static public Ground[] grounds;
-    private boolean[] colliressground ;
+    static public Topground[] topgrounds;
+   // static public Middleground[] middlegrounds;
+    private boolean[] colliressground;
+    private boolean[] colliresstopground;
     public static Shape[] rectground;
+    public static Shape[] recttopground;
 	public Manualman(String title) {
 		super(title);
 		
@@ -30,56 +35,120 @@ public class Manualman extends BasicGame {
  
   @Override
   public void init(GameContainer gc) throws SlickException { 
-	  
-	  player = new Player(GAME_WIDTH/4, 300, 0);
-	  grounds = new Ground[3]; 
-      for (int i = 0; i < 3; i++) {
-      grounds[i] = new Ground(GAME_WIDTH-320-50-GAME_WIDTH/2+((640+100)*i), GAME_HEIGHT-20,Ground_VX);
-      
-      }
-	  INIT_COLLIRESS_ALL();
-	  rectground = new Rectangle[3];
-	  for(int i=0; i < 3; i++){
-	      rectground[i] = new Rectangle(GAME_WIDTH/2-50-640+((640+100)*i),GAME_HEIGHT-40,640,40);
+
+	  CREATE_PLAYER(); //กำหนดค่าเริ่มต้นให้ตัวละคร
+	  INIT_ALLGROUND(); //กำหนดค่าเริ่มต้นให้ทุกพื้น
+	  INIT_COLLIRESS_ALL(); //กำหนดค่าบูลีน รับค่าเช็คชนทุกตัว เป็น false
+	  SHAPE_INITALL(); //กำหนดสร้าง Collider ไว้ตอนเริ่มเกม
 	       
 	  }
-  }
+  
   public void INIT_COLLIRESS_ALL(){
 	    	colliressground = new boolean[3];
 	        for(int i = 0;i< colliressground.length;i++){
 	        colliressground[i]= false;
 	        
 	        }
-	         
+	        colliresstopground = new boolean[3];
+	        for(int i = 0;i< colliresstopground.length;i++){
+		        colliresstopground[i]= false;
+		        
+		        }
 	    
 	    }
- 
+  public void SHAPE_INITALL(){
+	  rectground = new Rectangle[3];
+	  for(int i=0; i < 3; i++){
+	        rectground[i] = new Rectangle(GAME_WIDTH/2-50-640+((640+100)*i),GAME_HEIGHT-40,640,40);
+	       
+	        }
+	  recttopground = new Rectangle[3];
+	  for(int i=0; i < 3; i++){
+	        recttopground[i] = new Rectangle(0*(GAME_WIDTH*i), Topground.HEIGHT/2,640,40);
+	     
+	        }
+  }
+  public void INIT_ALLGROUND() throws SlickException{
+	  grounds = new Ground[3]; 
+      for (int i = 0; i < 3; i++) {
+      grounds[i] = new Ground(GAME_WIDTH-320-50-GAME_WIDTH/2+((640+100)*i), GAME_HEIGHT-20,Ground_VX);
+      
+      }
+      topgrounds = new Topground[3]; 
+      for (int i = 0; i < 3; i++) {
+      topgrounds[i] = new Topground(50+((640+100)*i), Topground.HEIGHT/2,Ground_VX);
+      
+      }
+	  
+  }
   
   
   
  
   @Override
   public void update(GameContainer gc, int dt) throws SlickException {
-  player.update();
-  for (Ground ground : grounds) {
+	  PLAYER_UPDATE(); //อัพเดธตัวละครเกม
+	  UPDATE_ALL_GROUND(); //ไว้อัพเดธพื้นทุกพื้น
+	  CheckCollisionALL_Ground(); //ไว้เช็คชน
+	  RECT_SETXYAUTO(); //ให้ Collider ไล่ตามพื้นต่างๆ อัตโนมัติ
+  }
+  public void CheckCollisionALL_Ground(){
+	  for(int j= 0;j<colliressground.length;j++){
+	      colliressground[j]=Player.circleplayer.intersects(rectground[j]);
+	      
+	      if(colliressground[0]||colliressground[1]||colliressground[2]){
+	    	  Swingjump=0;
+	        player.y=61;
+	        player.setVy(0); 
+	        }
+	      }
+	  for(int j= 0;j<colliresstopground.length;j++){
+	      colliresstopground[j]=Player.circleplayer.intersects(recttopground[j]);
+	      if(colliresstopground[0]||colliresstopground[1]||colliresstopground[2]){
+	    	  Swingjump=1;
+	        player.y=420;
+	       
+	        player.setVy(0); 
+	        }
+	      }
+	  
+	  
+  }
+  public void UPDATE_ALL_GROUND(){
+	  for (Ground ground : grounds) {
       
       ground.update();
       
  }
-  for(int temp = 0; temp < 3; temp++){
-      rectground[temp].setCenterX(grounds[temp].getX());
-      rectground[temp].setCenterY(grounds[temp].getY()); 
-      }
+ for (Topground topground : topgrounds) {
+      
+      topground.update();
+      
+ }
+ }
+  public void PLAYER_UPDATE(){
+	  player.update();
+	  
   }
   @Override
   public void render(GameContainer gc, Graphics g) throws SlickException {
 	  player.render();
-	  for (Ground ground : grounds) {
+	  RENDER_ALLGROUND(); // วาดพื้นล่างกลางบน
+	  SETCOLOR_SHAPE(g); // เอาไว้  เซตสีของ colliderที่ไว้ใช้เช็คชน
+  }
+  public void RENDER_ALLGROUND(){
+ for (Ground ground : grounds) {
           
           ground.render();
           
      }
-	  SETCOLOR_SHAPE(g);
+  for (Topground topground : topgrounds) {
+          
+          topground.render();
+          
+     }
+	  
+	  
   }
   public static void SETCOLOR_SHAPE(Graphics g){
 	  g.setColor(Color.yellow);
@@ -93,9 +162,37 @@ public class Manualman extends BasicGame {
           g.setColor(Color.pink);
           g.draw(rec);
           }
+      
+      for(Shape rec : recttopground){
+          g.setColor(Color.yellow);
+          g.fill(rec);
+          g.setColor(Color.pink);
+          g.draw(rec);
+          }
 	  
   }
- 
+  public void RECT_SETXYAUTO(){  
+	  for(int temp = 0; temp < 3; temp++){
+      rectground[temp].setCenterX(grounds[temp].getX());
+      rectground[temp].setCenterY(grounds[temp].getY()); 
+      }
+	  for(int temp = 0; temp < 3; temp++){
+	        recttopground[temp].setCenterX(topgrounds[temp].getX());
+	        recttopground[temp].setCenterY(topgrounds[temp].getY()); 
+	        }
+  }
+  public static void CREATE_PLAYER() throws SlickException{
+
+	  
+	  player = new Player(GAME_WIDTH/4+200, 300, 0);
+	  
+  }
+  @Override
+  public void keyPressed(int key, char c) {
+          if (key == Input.KEY_SPACE) {
+        	
+        	  player.jump();  
+          }}
   public static void main(String[] args) {
     try {
       AppGameContainer appgc;

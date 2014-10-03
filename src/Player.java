@@ -29,11 +29,21 @@ public class Player {
         public void update() {
         	  circleplayer.setCenterX(x);
               circleplayer.setCenterY(Manualman.GAME_HEIGHT-y);
-        
-        	
+              if(Manualman.Swingjump==0){
+              y += vy;
+              vy -= Manualman.G;
+              }
+              else if(Manualman.Swingjump==1){
+              y -= -vy;
+              vy += Manualman.G;
+            	  
+              }
+             
        }
         public void jump(){
-        
+        	if(Manualman.Swingjump==0)
+        	vy = vjump;
+        	else vy = -vjump;
         	
         }
         public void setVy(float vy) {
