@@ -23,6 +23,7 @@ public class Manualman extends BasicGame {
  
   @Override
   public void render(GameContainer gc, Graphics g) throws SlickException {
+  g.drawString("HelloWorld",200, 200);
   }
  
   public static void main(String[] args) {
