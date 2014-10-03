@@ -24,7 +24,9 @@ public class Topground {
     
   }
    public void update() {
-    x += vx;  
+	   if(vx >= -6.5)
+		   vx -= 0.0004;
+	   x += vx;  
         if(this.x < -WIDTH)
 		    {
         	this.x=PROPER_SETPOSITION_INIT_X;

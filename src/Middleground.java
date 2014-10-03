@@ -24,6 +24,8 @@ public class Middleground {
     
   }
    public void update() {
+	   if(vx >= -5)
+		   vx -= 0.0007;
 	   x += vx;  
        if(this.x < -WIDTH/2)
 		    {

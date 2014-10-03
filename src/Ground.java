@@ -28,7 +28,10 @@ public class Ground {
     
   }
    public void update() {
-    x += vx;  
+       if(vx >= -8)
+	   vx -= 0.002;
+	   x += vx;  
+    
         if(this.x < -WIDTH/2)
 		    {
 		    	this.x=PROPER_SETPOSITION_INIT_X;

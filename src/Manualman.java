@@ -121,6 +121,7 @@ public class Manualman extends BasicGame {
 	  CheckCollisionALL_Ground(); //ไว้เช็คชน
 	  RECT_SETXYAUTO(); //ให้ Collider ไล่ตามพื้นต่างๆ อัตโนมัติ
 	  ENDOFEDGE();
+	  
 	  }
   }
   // Method in update {
