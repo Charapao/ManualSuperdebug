@@ -1,3 +1,4 @@
+import java.util.LinkedList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,19 +20,25 @@ public class Manualman extends BasicGame {
     public static final int GAME_WIDTH = 640;
     public static final int GAME_HEIGHT = 480;
     public static final float Ground_VX = -4;
+    public static final int NUMBER_OF_THORN =20;
+    public static float Score = 0;
     // ประกาศอ๊อบเจ็ค
     static public Player player;
     static public Ground[] grounds;
     static public Topground[] topgrounds;
     static public Middleground[] middlegrounds;
+    static public Thorn[] thorns;
+    
     // boolean ไว้เก็บค่าดช็นชน
     private boolean[] colliressground;
     private boolean[] colliresstopground;
     private boolean[] colliressmiddleground;
+    private boolean[] colliressthorn;
     // Collider ไว้เช็ตชน
     public static Shape[] rectground;
     public static Shape[] recttopground;
     public static Shape[] rectmiddleground;
+    public static Shape[] rectthorn;
     //boolean สำหรับ จบเกมกับรีเซ็ทเกม
     private boolean GAMEISOVER ;
     private boolean GAMERESET ;
@@ -47,7 +54,7 @@ public class Manualman extends BasicGame {
 	  GAMEISOVER = false;
       GAMERESET= false;
 	  CREATE_PLAYER(); //กำหนดค่าเริ่มต้นให้ตัวละคร
-	  INIT_ALLGROUND(); //กำหนดค่าเริ่มต้นให้ทุกพื้น
+	  INIT_ALLGROUNDANDTHORN(); //กำหนดค่าเริ่มต้นให้ทุกพื้น
 	  INIT_COLLIRESS_ALL(); //กำหนดค่าบูลีน รับค่าเช็คชนทุกตัว เป็น false
 	  SHAPE_INITALL(); //กำหนดสร้าง Collider ไว้ตอนเริ่มเกม
 	  }
@@ -55,7 +62,7 @@ public class Manualman extends BasicGame {
  public static void CREATE_PLAYER() throws SlickException{
 
 	  
-	  player = new Player(GAME_WIDTH/4+200, 300, 0);
+	  player = new Player(GAME_WIDTH/4, 300, 0);
 	  
   }
   public void INIT_COLLIRESS_ALL(){
@@ -74,6 +81,11 @@ public class Manualman extends BasicGame {
 	        colliressmiddleground[i]= false;
 	        
 	        }
+	        colliressthorn = new boolean[NUMBER_OF_THORN];
+	        for(int i = 0;i< colliressthorn.length;i++){
+	        	colliressthorn[i]= false;
+	        
+	        }
 	    
 	    }
   public void SHAPE_INITALL(){
@@ -89,8 +101,12 @@ public class Manualman extends BasicGame {
 	  for(int i=0; i < 3; i++){
 	        rectmiddleground[i] = new Rectangle(0*(GAME_WIDTH*i), Middleground.HEIGHT/2,640,40);
 	        }
+	  rectthorn = new Rectangle[NUMBER_OF_THORN];
+	  for(int i=0; i < NUMBER_OF_THORN; i++){
+		  rectthorn[i] = new Rectangle(0*(GAME_WIDTH*i), Middleground.HEIGHT/2,20,40);
+	        }
   }
-  public void INIT_ALLGROUND() throws SlickException{
+  public void INIT_ALLGROUNDANDTHORN() throws SlickException{
 	  grounds = new Ground[3]; 
       for (int i = 0; i < 3; i++) {
       grounds[i] = new Ground(GAME_WIDTH-320-50-GAME_WIDTH/2+((640+100)*i), GAME_HEIGHT-20,Ground_VX);
@@ -104,8 +120,20 @@ public class Manualman extends BasicGame {
       middlegrounds = new Middleground[3];
       for (int i = 0; i < 3; i++) {
      middlegrounds[i] = new Middleground(-300+((640+100)*i), GAME_HEIGHT/2,Ground_VX);
+      }
+     thorns = new Thorn[NUMBER_OF_THORN];
+     for(int i = 0; i < NUMBER_OF_THORN; i++){
+    	 if(i<5)
+    	 thorns[i] = new ThornVaryMiddleGround(400+300*i,200,Ground_VX);
+    	 if(i>=5&&i<=9)
+    	 thorns[i] = new ThornVaryGround(400+300*(i-5),420,Ground_VX);
+    	 if(i>9&&i<=14)
+    	 thorns[i] = new ThornVaryceillingmiddle(100 +300*(i-10),280,Ground_VX);
+    	 if(i>14&&i<=19)
+         thorns[i] = new ThornVaryceilingTopground(200+300*(i-15),60,Ground_VX);
+     }
+  
     
-    }
 	  
   }
   //}
@@ -118,14 +146,14 @@ public class Manualman extends BasicGame {
 	  if(!GAMEISOVER){
 	  PLAYER_UPDATE(); //อัพเดธตัวละครเกม
 	  UPDATE_ALL_GROUND(); //ไว้อัพเดธพื้นทุกพื้น
-	  CheckCollisionALL_Ground(); //ไว้เช็คชน
+	  CheckCollisionALL_GroundANDThorn(); //ไว้เช็คชน
 	  RECT_SETXYAUTO(); //ให้ Collider ไล่ตามพื้นต่างๆ อัตโนมัติ
 	  ENDOFEDGE();
-	  
+	  Score+= 300;
 	  }
   }
   // Method in update {
-  public void CheckCollisionALL_Ground(){
+  public void CheckCollisionALL_GroundANDThorn(){
 	  for(int j= 0;j<colliressground.length;j++){
 	      colliressground[j]=Player.circleplayer.intersects(rectground[j]);
 	      
@@ -156,8 +184,13 @@ public class Manualman extends BasicGame {
 	          Swingjump=1;
 	          player.setVy(0); }
 	  }
-	  
-	  
+	  for(int j= 0;j<colliressthorn.length;j++){
+		  colliressthorn[j]=Player.circleplayer.intersects(rectthorn[j]);
+		  if(colliressthorn[j]){
+			  GAMEISOVER = true;
+			  
+		  }
+	  }
   }
   public void UPDATE_ALL_GROUND(){
 	  for (Ground ground : grounds) {
@@ -175,6 +208,10 @@ public class Manualman extends BasicGame {
      middleground.update();
      
 }
+ for(Thorn thorn : thorns){
+	 
+	 thorn.update();
+ }
  }
   public void PLAYER_UPDATE(){
 	  player.update();
@@ -192,10 +229,13 @@ public class Manualman extends BasicGame {
   @Override
   public void render(GameContainer gc, Graphics g) throws SlickException {
 	  player.render();
+	  
+	  
 	  RENDER_ALLGROUND(); // วาดพื้นล่างกลางบน
 	  SETCOLOR_SHAPE(g); // เอาไว้  เซตสีของ colliderที่ไว้ใช้เช็คชน
 	  if(GAMEISOVER){
           g.drawString("GAME OVER", 320-40, 240-10);
+          g.drawString("Score : "+Score, 500, 450);
           }
   }
   //Method in render {
@@ -213,6 +253,11 @@ public class Manualman extends BasicGame {
   for (Middleground middleground : middlegrounds) {
       
       middleground.render();
+      
+ }
+ for (Thorn thorn : thorns) {
+      
+      thorn.render();
       
  }
   
@@ -243,6 +288,12 @@ public class Manualman extends BasicGame {
           g.setColor(Color.pink);
           g.draw(rec);
           }
+      for(Shape rec : rectthorn){
+          g.setColor(Color.yellow);
+          g.fill(rec);
+          g.setColor(Color.pink);
+          g.draw(rec);
+          }
 	  
   }
   public void RECT_SETXYAUTO(){  
@@ -257,6 +308,10 @@ public class Manualman extends BasicGame {
 	  for(int temp = 0; temp < 3; temp++){
 	        rectmiddleground[temp].setCenterX(middlegrounds[temp].getX());
 	        rectmiddleground[temp].setCenterY(middlegrounds[temp].getY()); 
+	        }
+	  for(int temp = 0; temp < NUMBER_OF_THORN; temp++){
+	        rectthorn[temp].setCenterX(thorns[temp].getX());
+	        rectthorn[temp].setCenterY(thorns[temp].getY()); 
 	        }
   }
  
