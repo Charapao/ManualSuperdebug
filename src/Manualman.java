@@ -120,6 +120,43 @@ public class Manualman extends BasicGame {
 		}
 
 	}
+	public void checkThornCollideGap() {
+
+		for( int i =0;i<NUMBER_OF_THORN;i++)
+		{
+
+		for(int j = 0;j<3;j++)
+		{
+		if(rectagle_Thorn[i].intersects(rectagle_GapGround[j]))
+		{
+		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+		System.out.println("kuy");
+		return;
+		}
+		}
+
+		for(int j = 0;j<3;j++)
+		{
+		if(rectagle_Thorn[i].intersects(rectagle_GapMiddleGround[j]))
+		{
+		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+		System.out.println("kuy");
+		return;
+		}
+		}
+
+		for(int j = 0;j<3;j++)
+		{
+		if(rectagle_Thorn[i].intersects(rectagle_GapTopGround[j]))
+		{
+		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+		System.out.println("kuy");
+		return;
+		}
+		}
+		}
+
+		}
 
 	public void SHAPE_INITALL() {
 		rectagle_Ground = new Rectangle[3];
@@ -140,7 +177,7 @@ public class Manualman extends BasicGame {
 		rectagle_Thorn = new Rectangle[NUMBER_OF_THORN];
 		for (int i = 0; i < NUMBER_OF_THORN; i++) {
 			rectagle_Thorn[i] = new Rectangle(0 * (GAME_WIDTH * i),
-					Middleground.HEIGHT / 2, 20, 40);
+					Middleground.HEIGHT / 2, 10, 40);
 		}
 		rectagle_GapGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
@@ -218,6 +255,8 @@ public class Manualman extends BasicGame {
 			CheckCollisionALL_GroundANDThorn(); // äÇéàªç¤ª¹
 			RECT_SETXYAUTO(); // ãËé Collider äÅèµÒÁ¾×é¹µèÒ§æ ÍÑµâ¹ÁÑµÔ
 			ENDOFEDGE();
+			checkThornCollideGap();
+			CheckCollisionALL_GroundANDThorn();
 			for(Entity entity : entities) {
 			      entity.update(dt);
 			    }
@@ -339,7 +378,7 @@ public class Manualman extends BasicGame {
 		player.render();
 
 		RENDER_ALLGROUND(); // ÇÒ´¾×é¹ÅèÒ§¡ÅÒ§º¹
-		// SETCOLOR_SHAPE(g); // àÍÒäÇé à«µÊÕ¢Í§ collider·ÕèäÇéãªéàªç¤ª¹
+		 SETCOLOR_SHAPE(g); // àÍÒäÇé à«µÊÕ¢Í§ collider·ÕèäÇéãªéàªç¤ª¹
 		// WindWalk.render(g);
 		if (GAMEISOVER) {
 
