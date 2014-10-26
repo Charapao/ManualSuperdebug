@@ -127,38 +127,38 @@ public class Manualman extends BasicGame {
 		for( int i =0;i<NUMBER_OF_THORN;i++)
 		{
 
-		for(int j = 0;j<3;j++)
-		{
-		if(rectagle_Thorn[i].intersects(rectagle_GapGround[j]))
-		{
-		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
-		System.out.println("kuy");
-		return;
-		}
+			for(int j = 0;j<3;j++)
+			{
+				if(rectagle_Thorn[i].intersects(rectagle_GapGround[j]))
+				{
+					thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+					System.out.println("kuy");
+					return;
+				}
+			}
+
+			for(int j = 0;j<3;j++)
+			{
+				if(rectagle_Thorn[i].intersects(rectagle_GapMiddleGround[j]))
+				{
+					thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+					System.out.println("kuy");
+					return;
+				}
+			}
+
+			for(int j = 0;j<3;j++)
+			{
+				if(rectagle_Thorn[i].intersects(rectagle_GapTopGround[j]))
+				{
+					thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
+					System.out.println("kuy");
+					return;
+				}
+			}
 		}
 
-		for(int j = 0;j<3;j++)
-		{
-		if(rectagle_Thorn[i].intersects(rectagle_GapMiddleGround[j]))
-		{
-		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
-		System.out.println("kuy");
-		return;
-		}
-		}
-
-		for(int j = 0;j<3;j++)
-		{
-		if(rectagle_Thorn[i].intersects(rectagle_GapTopGround[j]))
-		{
-		thorns[i].x = 100 + 640 + 100 + 640 + 320 + 100;
-		System.out.println("kuy");
-		return;
-		}
-		}
-		}
-
-		}
+	}
 
 	public void SHAPE_INITALL() {
 		rectagle_Ground = new Rectangle[3];
@@ -184,17 +184,17 @@ public class Manualman extends BasicGame {
 		rectagle_GapGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
 			rectagle_GapGround[i] = new Rectangle(-500,400,150,40);
-		
+
 		}
 		rectagle_GapMiddleGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
 			rectagle_GapMiddleGround[i] = new Rectangle(-500,400,150,40);
-		
+
 		}
 		rectagle_GapTopGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
 			rectagle_GapTopGround[i] = new Rectangle(-500,400,150,40);
-		
+
 		}
 	}
 
@@ -221,30 +221,30 @@ public class Manualman extends BasicGame {
 			if (i < 5) {
 				thorns[i] = new ThornVaryMiddleGround(400 + 240 * i, 203,
 						Ground_VX);
-			
+
 			}
 			if (i >= 5 && i <= 9) {
 				thorns[i] = new ThornVaryGround(400 + 350 * (i - 5), 423,
 						Ground_VX);
-				 
-				
+
+
 			}
 			if (i > 9 && i <= 14) {
 				thorns[i] = new ThornVaryceillingmiddle(100 + 260 * (i - 10),
 						278, Ground_VX);
-				
+
 			}
 			if (i > 14 && i <= 19) {
 				thorns[i] = new ThornVaryceilingTopground(200 + 320 * (i - 15),
 						58, Ground_VX);
-			
+
 			}
-			}
-		
-		
 		}
 
-	
+
+	}
+
+
 
 	// }
 
@@ -260,9 +260,9 @@ public class Manualman extends BasicGame {
 			checkThornCollideGap();
 			CheckCollisionALL_GroundANDThorn();
 			for(Entity entity : entities) {
-			      entity.update(dt);
-			    }
-			
+				entity.update(dt);
+			}
+
 			Score += 300;
 			if (gc.getInput().isKeyDown(Input.KEY_SPACE)) {
 
@@ -275,7 +275,7 @@ public class Manualman extends BasicGame {
 
 	private void TimingItem() {
 		if(getTime() - Manualman.lastframe >=3000
-				 ){
+				){
 			lastframe = 0;
 			INVISIBLE = false;
 			System.out.println(lastframe);
@@ -324,12 +324,12 @@ public class Manualman extends BasicGame {
 		for (int j = 0; j < colliressThorn.length; j++) {
 			colliressThorn[j] = Player.circleplayer.intersects(rectagle_Thorn[j]);
 			if (colliressThorn[j]&&!INVISIBLE) {
-				
+
 				GAMEISOVER = true;
-				
+
 			}
 		}
-		
+
 	}
 
 	public void UPDATE_ALL_GROUND() {
@@ -377,7 +377,7 @@ public class Manualman extends BasicGame {
 	// }
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
-		 g.drawImage(Bg, 0, 0);
+		g.drawImage(Bg, 0, 0);
 		player.render();
 		RENDER_ALLGROUND(); // ÇÒ´¾×é¹ÅèÒ§¡ÅÒ§º¹
 		// SETCOLOR_SHAPE(g); // àÍÒäÇé à«µÊÕ¢Í§ collider·ÕèäÇéãªéàªç¤ª¹
@@ -388,9 +388,9 @@ public class Manualman extends BasicGame {
 			g.drawString("Score : " + Score, 500, 450);
 
 		}
-		 for (Entity entity : entities) {
-		      entity.render(g);
-		    }
+		for (Entity entity : entities) {
+			entity.render(g);
+		}
 	}
 
 	// Method in render {
@@ -514,7 +514,7 @@ public class Manualman extends BasicGame {
 	}
 
 	public long getTime() {
-	    return (System.nanoTime() /1000000);
+		return (System.nanoTime() /1000000);
 	}
 	public static void main(String[] args) {
 		try {
