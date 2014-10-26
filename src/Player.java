@@ -18,7 +18,7 @@ public class Player {
 		this.y = y;
 		this.vy = vjump;
 		this.vjump = Manualman.PLAYER_JUMP_VY;
-		image = new Image("res/Manaul.png");
+		image = new Image("res/Tuytan.png");
 		circleplayer = new Circle(0, 0, 20);
 
 	}

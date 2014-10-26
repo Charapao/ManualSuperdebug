@@ -7,6 +7,7 @@ import org.newdawn.slick.BasicGame;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.GameContainer;
 import org.newdawn.slick.Graphics;
+import org.newdawn.slick.Image;
 import org.newdawn.slick.Input;
 import org.newdawn.slick.SlickException;
 import org.newdawn.slick.geom.Rectangle;
@@ -55,7 +56,7 @@ public class Manualman extends BasicGame {
 	public static boolean INVISIBLE;
 	public static LinkedList<Entity> entities;
 	public static long lastframe;
-	
+	private Image Bg = null;
 
 	public Manualman(String title) {
 		super(title);
@@ -67,6 +68,7 @@ public class Manualman extends BasicGame {
 		GAMEISOVER = false;
 		GAMERESET = false;
 		INVISIBLE = false;
+		Bg = new Image("res/map.png");  
 		CREATE_PLAYER(); // กำหนดค่าเริ่มต้นให้ตัวละคร
 		INIT_ALLGROUNDANDTHORN(); // กำหนดค่าเริ่มต้นให้ทุกพื้น
 		INIT_COLLIRESS_ALL(); // กำหนดค่าบูลีน รับค่าเช็คชนทุกตัว เป็น false
@@ -181,17 +183,17 @@ public class Manualman extends BasicGame {
 		}
 		rectagle_GapGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
-			rectagle_GapGround[i] = new Rectangle(-500,400,100,40);
+			rectagle_GapGround[i] = new Rectangle(-500,400,150,40);
 		
 		}
 		rectagle_GapMiddleGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
-			rectagle_GapMiddleGround[i] = new Rectangle(-500,400,100,40);
+			rectagle_GapMiddleGround[i] = new Rectangle(-500,400,150,40);
 		
 		}
 		rectagle_GapTopGround = new Rectangle[3];
 		for (int i = 0; i < 3; i++) {
-			rectagle_GapTopGround[i] = new Rectangle(-500,400,100,40);
+			rectagle_GapTopGround[i] = new Rectangle(-500,400,150,40);
 		
 		}
 	}
@@ -217,23 +219,23 @@ public class Manualman extends BasicGame {
 		thorns = new Thorn[NUMBER_OF_THORN];
 		for (int i = 0; i < NUMBER_OF_THORN; i++) {
 			if (i < 5) {
-				thorns[i] = new ThornVaryMiddleGround(400 + 300 * i, 203,
+				thorns[i] = new ThornVaryMiddleGround(400 + 240 * i, 203,
 						Ground_VX);
 			
 			}
 			if (i >= 5 && i <= 9) {
-				thorns[i] = new ThornVaryGround(400 + 300 * (i - 5), 423,
+				thorns[i] = new ThornVaryGround(400 + 350 * (i - 5), 423,
 						Ground_VX);
 				 
 				
 			}
 			if (i > 9 && i <= 14) {
-				thorns[i] = new ThornVaryceillingmiddle(100 + 300 * (i - 10),
+				thorns[i] = new ThornVaryceillingmiddle(100 + 260 * (i - 10),
 						278, Ground_VX);
 				
 			}
 			if (i > 14 && i <= 19) {
-				thorns[i] = new ThornVaryceilingTopground(200 + 300 * (i - 15),
+				thorns[i] = new ThornVaryceilingTopground(200 + 320 * (i - 15),
 						58, Ground_VX);
 			
 			}
@@ -287,7 +289,7 @@ public class Manualman extends BasicGame {
 
 			if (colliressGround[0] || colliressGround[1] || colliressGround[2]) {
 				SwingJump = 0;
-				player.y = 61;
+				player.y = 60;
 				player.setVy(0);
 			}
 		}
@@ -375,10 +377,10 @@ public class Manualman extends BasicGame {
 	// }
 	@Override
 	public void render(GameContainer gc, Graphics g) throws SlickException {
+		 g.drawImage(Bg, 0, 0);
 		player.render();
-
 		RENDER_ALLGROUND(); // วาดพื้นล่างกลางบน
-		 SETCOLOR_SHAPE(g); // เอาไว้ เซตสีของ colliderที่ไว้ใช้เช็คชน
+		// SETCOLOR_SHAPE(g); // เอาไว้ เซตสีของ colliderที่ไว้ใช้เช็คชน
 		// WindWalk.render(g);
 		if (GAMEISOVER) {
 
